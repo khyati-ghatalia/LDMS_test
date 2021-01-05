@@ -6,7 +6,8 @@
 
 # It contains the table creation script and the insert statements. This needs to be executed first.
 
-# The package.sql contains the solution for 3,4,5,6. 
+# The package_spec.sql and package_body.sql contains the solution for 3,4,5,6. This is a package employee_operations and has 3 procedures and 1 function
+# THe package spec(file package_spec.sql) needs to be executed first and then the package body (file package_body.sql)
 
 # 3. Create an appropriate executable database object to allow an Employee to be created 
 #  I have created the procedure employee_operations.add_employee(e_id number, e_name varchar2, e_jobtitle varchar2, e_manager_id number, e_salary number, 
