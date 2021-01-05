@@ -45,8 +45,28 @@ dbms_output.put_line(sal);
 END;
 
 
-# For 7 and 8 I have created an apex screen in apex 20.0 and added an export here. I have created 2 pages one for each report which can be navigated through homepage. The filename is LDMS_REPORT.sql. This can be imported to be viewed.
+# For 7 and 8 I have created an apex screen in apex 20.2 and added an export here. I have created 2 pages one for each report which can be navigated through homepage. The filename is LDMS_REPORT.sql. This can be imported to be viewed.More info : https://docs.oracle.com/en/database/oracle/application-express/20.2//htmdb/changes-in-this-release.html#GUID-747B08A2-A680-42EA-87A5-54BDF469E5EE
 
 
 # I have added the UTPLSQL code as well in the file test_employee_operations.sql
+/* utPLSQL is a Unit Testing framework for Oracle PL/SQL and SQL.
 
+For installing this please refer to 
+ http://utplsql.org/utPLSQL/v3.0.1/userguide/install.html
+
+ Additional info
+
+ To Run Tests
+
+ To execute using development IDE (TOAD/SQLDeveloper/PLSQLDeveloper/other) use one of following commands.
+
+begin
+  ut.run();
+end;
+/
+exec  ut.run();
+select * from table(ut.run());
+The above commands will run all the suites in the current schema and provide report to dbms_output or as a select statement.
+
+
+ */
