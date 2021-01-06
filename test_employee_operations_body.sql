@@ -9,12 +9,15 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         e_salary number := 50000;
         e_departmentid number := 3;
 
+        /* Test to add an employee */ 
         PROCEDURE add_employee_normal_case IS
         BEGIN
         insert into employee (employee_id,employee_name,job_title,manager_id,date_hired,salary,department_id) values 
         (e_id,e_name,e_jobtitle,e_manager_id,to_date(e_datehired,'dd/mm/yy'), e_salary,e_departmentid);
         commit;
         end;
+
+        /* Test to add an employee which already exists */
 
         PROCEDURE add_employee_negative_case IS
         BEGIN
@@ -26,7 +29,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         END;
 
    
-
+        /* Test to update salary of an employee */
 
         PROCEDURE update_emp_sal_normal IS
         results      sys_refcursor;
@@ -61,7 +64,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         END;
 
 
-
+        /* Test to update salary of an employee which is invalid i.e 0 */
 
         PROCEDURE update_emp_sal_invalid is
         BEGIN
@@ -72,6 +75,8 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
 
+
+        /* Test to update salary of an employee which does not exist */
         PROCEDURE update_emp_sal_emp_not_exists IS
         BEGIN
             employee_operations.update_employee_sal(90002341,'D',5);
@@ -81,6 +86,8 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
 
+
+        /* Test to transfer employee to a department */
         PROCEDURE transfer_employee_normal AS
         
         test_employee number := 90006;
@@ -99,6 +106,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             
         END;
 
+        /* Test to transfer employee to a department which does not exist */
         PROCEDURE transfer_employee_dep_notexists is 
         BEGIN
             employee_operations.transfer_employee(90008,32);
@@ -108,6 +116,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
         
+        /* Test to transfer employee which does not exist */
         PROCEDURE transfer_employee_emp_notexists is 
         BEGIN
             employee_operations.transfer_employee(9000761,3);
@@ -117,6 +126,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
       
+      /* Test to find salary of an employee which exists */
         PROCEDURE find_employee_sal_normal AS
         result_sal number :=0;
         BEGIN
@@ -124,6 +134,8 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
             ut.expect(result_sal).to_equal(100000);
         end;
 
+
+    /* Test to find salary of an employee which does not exist */
         PROCEDURE find_employee_sal_emp_notexists is 
         BEGIN
             employee_operations.find_employee_sal(9000761);
