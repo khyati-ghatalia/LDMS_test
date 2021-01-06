@@ -19,7 +19,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         PROCEDURE add_employee_negative_case IS
         BEGIN
             employee_operations.add_employee(90001,'John Smith','CEO',null, 100000, 1, to_date('01/01/95','dd/mm/yy'));
-            ut.expect(sqlerrm).to_equal('The employee already exists.'); 
+            ut.expect( sqlcode ).not_to( equal( 0 ) );
         EXCEPTION
             WHEN others THEN
             ut.expect( sqlcode ).not_to( equal( 0 ) );
@@ -66,7 +66,7 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         PROCEDURE update_emp_sal_invalid is
         BEGIN
             employee_operations.update_employee_sal(90001,'D',100);
-            ut.expect(sqlerrm).to_equal('The salary cannot be updated.'); 
+            ut.expect( sqlcode ).not_to( equal( 0 ) );
         EXCEPTION
             when others then
             ut.expect( sqlcode ).not_to( equal( 0 ) );
@@ -75,19 +75,34 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         PROCEDURE update_emp_sal_emp_not_exists IS
         BEGIN
             employee_operations.update_employee_sal(90002341,'D',5);
-            ut.expect(sqlerrm).to_equal('The employee does not exist.');
+            ut.expect( sqlcode ).not_to( equal( 0 ) );
         EXCEPTION
             when others then
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
 
-        /* PROCEDURE transfer_employee_normal AS
-        ut.expect( employee_operation.transfer_employee(90003,4)).to_equal(''); */
+        PROCEDURE transfer_employee_normal AS
+        
+        test_employee number := 90006;
+        result_to_department number;
+        expected_to_department number := 3;
+    
+        BEGIN
+    
+            employee_operations.transfer_employee(test_employee,expected_to_department);
+
+            select department_id into result_to_department
+            from employee where employee_id = test_employee;
+
+            ut.expect( result_to_department ).to_equal( expected_to_department ) ;
+
+            
+        END;
 
         PROCEDURE transfer_employee_dep_notexists is 
         BEGIN
             employee_operations.transfer_employee(90008,32);
-            ut.expect(sqlerrm).to_equal('The department does not exist.');
+            ut.expect( sqlcode ).not_to( equal( 0 ) );
         EXCEPTION
             when others then
             ut.expect( sqlcode ).not_to( equal( 0 ) );
@@ -96,17 +111,17 @@ CREATE OR REPLACE PACKAGE BODY TEST_EMPLOYEE_OPERATIONS
         PROCEDURE transfer_employee_emp_notexists is 
         BEGIN
             employee_operations.transfer_employee(9000761,3);
-            ut.expect( sqlerrm).to_equal('The employee does not exist.');
+            ut.expect( sqlcode ).not_to( equal( 0 ) );
         EXCEPTION
             when others then
             ut.expect( sqlcode ).not_to( equal( 0 ) );
         end;
       
         PROCEDURE find_employee_sal_normal AS
-        results      sys_refcursor;
-        expected     sys_refcursor;
+        result_sal number :=0;
         BEGIN
-            ut.expect( employee_operations.find_employee_sal(90001)).to_equal(100000);
+        select employee_operations.find_employee_sal(90001) into result_sal from dual;
+            ut.expect(result_sal).to_equal(100000);
         end;
 
         PROCEDURE find_employee_sal_emp_notexists is 
